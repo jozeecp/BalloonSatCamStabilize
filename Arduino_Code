@@ -5,7 +5,9 @@
 #include <Servo.h>
 
 Servo myservo;
+Servo myservo1;
 float val;
+float val1;
 
 /* This driver reads raw data from the BNO055
    Connections
@@ -32,6 +34,7 @@ Adafruit_BNO055 bno = Adafruit_BNO055();
 void setup(void)
 {
   myservo.attach(9); // servo pin
+  myservo1.attach(10); // servo1 pin
   
   Serial.begin(9600);
   Serial.println("Orientation Sensor Raw Data Test"); Serial.println("");
@@ -117,6 +120,10 @@ void loop(void)
   val = quat.x() * 100;
   val = map(val, -70, 70, 0, 180);
   myservo.write(val);
+
+  val1 = - (quat.z()) * 100;
+  val1 = map(val1, -70, 70, 0, 180);
+  myservo1.write(val1);
 
   delay(BNO055_SAMPLERATE_DELAY_MS);
 }
