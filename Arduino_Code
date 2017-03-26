@@ -67,15 +67,15 @@ void loop(void)
   // - VECTOR_EULER         - degrees
   // - VECTOR_LINEARACCEL   - m/s^2
   // - VECTOR_GRAVITY       - m/s^2
-  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  imu::Vector<3> gyros = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
 
   /* Display the floating point data */
   Serial.print("X: ");
-  Serial.print(euler.x());
+  Serial.print(gyros.x());
   Serial.print(" Y: ");
-  Serial.print(euler.y());
+  Serial.print(gyros.y());
   Serial.print(" Z: ");
-  Serial.print(euler.z());
+  Serial.print(gyros.z());
   Serial.print("\t\t");
 
   /*
