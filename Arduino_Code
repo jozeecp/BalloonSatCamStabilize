@@ -2,6 +2,10 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
+#include <Servo.h>
+
+Servo myservo;
+float val;
 
 /* This driver reads raw data from the BNO055
    Connections
@@ -27,6 +31,8 @@ Adafruit_BNO055 bno = Adafruit_BNO055();
 /**************************************************************************/
 void setup(void)
 {
+  myservo.attach(9); // servo pin
+  
   Serial.begin(9600);
   Serial.println("Orientation Sensor Raw Data Test"); Serial.println("");
 
@@ -67,22 +73,24 @@ void loop(void)
   // - VECTOR_EULER         - degrees
   // - VECTOR_LINEARACCEL   - m/s^2
   // - VECTOR_GRAVITY       - m/s^2
-  imu::Vector<3> gyros = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
 
-  /* Display the floating point data */
+  
+  /* imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+  // Display the floating point data
   Serial.print("X: ");
-  Serial.print(gyros.x());
+  Serial.print(euler.x());
   Serial.print(" Y: ");
-  Serial.print(gyros.y());
+  Serial.print(euler.y());
   Serial.print(" Z: ");
-  Serial.print(gyros.z());
-  Serial.print("\t\t");
+  Serial.print(euler.z());
+  Serial.print("\t\t"); */ 
+  
 
-  /*
+ 
   // Quaternion data
   imu::Quaternion quat = bno.getQuat();
   Serial.print("qW: ");
-  Serial.print(quat.w(), 4);
+  Serial.print(quat.w());
   Serial.print(" qX: ");
   Serial.print(quat.y(), 4);
   Serial.print(" qY: ");
@@ -90,7 +98,7 @@ void loop(void)
   Serial.print(" qZ: ");
   Serial.print(quat.z(), 4);
   Serial.print("\t\t");
-  */
+  
 
   /* Display calibration status for each sensor. */
   uint8_t system, gyro, accel, mag = 0;
@@ -103,6 +111,12 @@ void loop(void)
   Serial.print(accel, DEC);
   Serial.print(" Mag=");
   Serial.println(mag, DEC);
+
+  /* Now we take the x compnent of the rotational motion and mep it to control the servo */
+  
+  val = quat.x() * 100;
+  val = map(val, -70, 70, 0, 180);
+  myservo.write(val);
 
   delay(BNO055_SAMPLERATE_DELAY_MS);
 }
