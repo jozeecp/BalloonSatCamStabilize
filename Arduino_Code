@@ -40,7 +40,13 @@ void loop(void)
 { 
   // Quaternion data
   imu::Quaternion quat = bno.getQuat();
-  /*Serial.print("qW: ");
+
+  float x = quat.x();
+  float y = quat.y();
+  float z = quat.z();
+
+  
+  Serial.print("qW: ");
   Serial.print(quat.w());
   Serial.print(" qX: ");
   Serial.print(quat.y(), 4);
@@ -49,20 +55,24 @@ void loop(void)
   Serial.print(" qZ: ");
   Serial.print(quat.z(), 4);
   Serial.print("\t\t");
-  Serial.println(quat.x() - quat.y(), 4); */
+  Serial.println(quat.x() - quat.y(), 4);
+
+  x = x - .1;
 
   /* Now we take the x compnent of the rotational motion and mep it to control the servo */
-  if (quat.z() <= .45 && quat.z() > -.14) 
+  if (z < .45 && z > -.14) 
   {
-    val = quat.x() * 90;
+    val = x * 90;
   }
-  else if (quat.z() > .45)
+  else if (z >= .45)
   {
-    val = - (quat.y() * 150); // definitely needs work
+    y = y + .15;
+    val = - y * 90;
   }
-  else if (quat.z() <= -.14)
+  else if (z <= -.14)
   {
-    val = quat.y() * 100;
+    y = y - .2;
+    val = y * 100;
   }
 
 
