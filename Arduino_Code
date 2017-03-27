@@ -1,3 +1,10 @@
+/* 
+
+Wiring:
+
+From  sensor, yellow goes to SCL and orange goes to SDA
+*/
+
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
@@ -42,12 +49,29 @@ void loop(void)
   Serial.print(quat.x(), 4);
   Serial.print(" qZ: ");
   Serial.print(quat.z(), 4);
-  Serial.print("\t\t");
+  Serial.println("\t\t");
 
   /* Now we take the x compnent of the rotational motion and mep it to control the servo */
-  val = quat.x() * 100;
-  val = map(val, -70, 70, 0, 180);
+  if (quat.z() < .45 && quat.z() > -.14) 
+  {
+    val = quat.x() * 100;
+    val = map(val, -70, 70, 0, 180);
+  }
+  else if (quat.z() > .45)
+  {
+    val = - (quat.y() * 100);
+    val = map(val, -70, 70, 0, 180);
+  }
+  else
+  {
+    val = quat.y() * 100;
+    val = map(val, -70, 70, 0, 180);
+  }
+
+
+  
   myservo.write(val);
+  
   /* now the z-component */
   val1 = - (quat.z()) * 100;
   val1 = map(val1, -70, 70, 0, 180);
