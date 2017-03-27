@@ -1,5 +1,4 @@
 /* 
-
 Wiring:
 
 From  sensor, yellow goes to SCL and orange goes to SDA
@@ -41,7 +40,7 @@ void loop(void)
 { 
   // Quaternion data
   imu::Quaternion quat = bno.getQuat();
-  Serial.print("qW: ");
+  /*Serial.print("qW: ");
   Serial.print(quat.w());
   Serial.print(" qX: ");
   Serial.print(quat.y(), 4);
@@ -49,33 +48,32 @@ void loop(void)
   Serial.print(quat.x(), 4);
   Serial.print(" qZ: ");
   Serial.print(quat.z(), 4);
-  Serial.println("\t\t");
+  Serial.print("\t\t");
+  Serial.println(quat.x() - quat.y(), 4); */
 
   /* Now we take the x compnent of the rotational motion and mep it to control the servo */
-  if (quat.z() < .45 && quat.z() > -.14) 
+  if (quat.z() <= .45 && quat.z() > -.14) 
   {
-    val = quat.x() * 100;
-    val = map(val, -70, 70, 0, 180);
+    val = quat.x() * 90;
   }
   else if (quat.z() > .45)
   {
-    val = - (quat.y() * 100);
-    val = map(val, -70, 70, 0, 180);
+    val = - (quat.y() * 150); // definitely needs work
   }
-  else
+  else if (quat.z() <= -.14)
   {
     val = quat.y() * 100;
-    val = map(val, -70, 70, 0, 180);
   }
 
 
   
+  val = map(val, -70, 70, 0, 180);
   myservo.write(val);
   
   /* now the z-component */
-  val1 = - (quat.z()) * 100;
+  val1 = - (quat.z()) * 85;
   val1 = map(val1, -70, 70, 0, 180);
   myservo1.write(val1);
 
-  delay(100);
+  delay(10);
 }
