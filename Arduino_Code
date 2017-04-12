@@ -12,16 +12,17 @@ From  sensor, yellow goes to SCL and orange goes to SDA
 Adafruit_BNO055 bno = Adafruit_BNO055();
 
 Servo myservo;
-Servo myservo1;
 float val;
-float val1;
-
+float pwmVal = 0;
+int contAttach = 10;
+int z = 0;
+int zp = 0;
+float za = 0;
 
 void setup(void)
 {
   myservo.attach(9); // servo pin
-  myservo1.attach(10); // servo1 pin
-  
+  pinMode(contAttach, OUTPUT);  
   Serial.begin(9600);
 
   /* Initialise the sensor */
@@ -43,10 +44,9 @@ void loop(void)
 
   float x = quat.x();
   float y = quat.y();
-  float z = quat.z();
 
   
-  Serial.print("qW: ");
+  /*Serial.print("qW: ");
   Serial.print(quat.w());
   Serial.print(" qX: ");
   Serial.print(quat.y(), 4);
@@ -55,7 +55,7 @@ void loop(void)
   Serial.print(" qZ: ");
   Serial.print(quat.z(), 4);
   Serial.print("\t\t");
-  Serial.println(quat.x() - quat.y(), 4);
+  Serial.println(quat.x() - quat.y(), 4); */
 
   x = x - .1;
 
@@ -79,6 +79,40 @@ void loop(void)
   }
 
 
+  myservo.write(val);
+
+
+
+  
+  /* now the z-component */
+  imu::Vector<3> gyro = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+
+
+  z = gyro.z() * 10;
+  zp = euler.z();
+  za = quat.z() * 100;
+  Serial.print("z: ");
+  Serial.print(z);
+  Serial.print("    ");
+  Serial.print("z': ");
+  Serial.print(zp);
+  Serial.print("    ");
+  Serial.print("z.quat: ");
+  Serial.print(za);
+  Serial.print("    ");
+  Serial.print("pwm: ");
+  Serial.println(pwmVal);
+  
+  pwmVal = map(z, -100, 100, 0, 255);
+  analogWrite(contAttach, pwmVal); 
+  
+  /*val1 = - (quat.z()) * 85;
+  val1 = map(val1, -70, 70, 0, 180);
+  myservo1.write(val1); */
+
+  delay(10);
+}
   
   
   myservo.write(val);
