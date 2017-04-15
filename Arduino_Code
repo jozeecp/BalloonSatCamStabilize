@@ -1,4 +1,4 @@
-/* 
+/*
 Wiring:
 
 From  sensor, yellow goes to SCL and orange goes to SDA
@@ -22,7 +22,7 @@ float za = 0;
 void setup(void)
 {
   myservo.attach(9); // servo pin
-  pinMode(contAttach, OUTPUT);  
+  pinMode(contAttach, OUTPUT);
   Serial.begin(9600);
 
   /* Initialise the sensor */
@@ -32,20 +32,20 @@ void setup(void)
     Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
     while(1);
   }
-  
+
   delay(1000);
 }
 
 
 void loop(void)
-{ 
+{
   // Quaternion data
   imu::Quaternion quat = bno.getQuat();
 
   float x = quat.x();
   float y = quat.y();
 
-  
+
   /*Serial.print("qW: ");
   Serial.print(quat.w());
   Serial.print(" qX: ");
@@ -60,7 +60,7 @@ void loop(void)
   x = x - .1;
 
   /* Now we take the x compnent of the rotational motion and mep it to control the servo */
-  if (z < .45 && z > -.14) 
+  if (z < .45 && z > -.14)
   {
     val = x * 90;
     val = map(val, -70, 70, 0, 180);
@@ -83,7 +83,7 @@ void loop(void)
 
 
 
-  
+
   /* now the z-component */
   imu::Vector<3> gyro = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
@@ -103,24 +103,13 @@ void loop(void)
   Serial.print("    ");
   Serial.print("pwm: ");
   Serial.println(pwmVal);
-  
+
   pwmVal = map(z, -100, 100, 0, 255);
-  analogWrite(contAttach, pwmVal); 
-  
+  analogWrite(contAttach, pwmVal);
+
   /*val1 = - (quat.z()) * 85;
   val1 = map(val1, -70, 70, 0, 180);
   myservo1.write(val1); */
-
-  delay(10);
-}
-  
-  
-  myservo.write(val);
-  
-  /* now the z-component */
-  val1 = - (quat.z()) * 85;
-  val1 = map(val1, -70, 70, 0, 180);
-  myservo1.write(val1);
 
   delay(10);
 }
