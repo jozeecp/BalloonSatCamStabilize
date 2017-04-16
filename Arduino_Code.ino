@@ -113,6 +113,7 @@ void loop(void)
 
   delay(10);
 }
+<<<<<<< HEAD:Arduino_Code.ino
 
 
   myservo.write(val);
@@ -124,3 +125,5 @@ void loop(void)
 
   delay(10);
 }
+=======
+>>>>>>> origin/cont.-servo:Arduino_Code
