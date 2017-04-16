@@ -39,14 +39,37 @@ test 8
     we get full speed at values near 0 and values near 255, this is good
 
 test 9
-  4/16/17, 2:07 AM: testing values at 10 and 250, mod servo
+  4/16/17, 2:07 AM: sweep from 0 to 255
     expected: the servo will start fast, slow down near 100 and speed up
     to max opposite speed at near 255
     result: the motor went at constant speed at all PWM values,
     and only switched directions at ~40
 
-The next tests will be conducted with the other modded servo
+Using the voltage divider modded servo
 
 test 10
-  4/16/17, 2:17 AM: testing values at 10 and 250, mod servo
+  4/16/17, 2:17 AM: sweep from 0 to 255
   the motor just went at constant speed
+
+Using the unconnected modded servo again
+
+test 11
+  4/16/17, 2:20 AM: sweep from 0 to 255, all leads touching
+    constant speed and short circuit errors like with the unmodded servo
+    this means that the short circuit error with the unmodded servo happens when
+    potentiometer is "closed"
+
+Using the unmodded servo
+
+test 12
+  4/16/17, 2:24 AM: sweep from 0 to 253 to avoid the short circuit error
+    avoided short circuit error!
+    But the speeding up and slowing down is not smooth
+    neither does it follow a clear pattern
+
+test 13
+  4/16/17, 2:28 AM: test various values from 0 to 253
+    at 0: no motion
+    at 10: almost constant motion at high speed, but there is a "dip" in the motion every revolution
+    at 90: no motion, just vibration
+    at 250: switches from high speed to low speed at constant intervals, opposite direction to 10
