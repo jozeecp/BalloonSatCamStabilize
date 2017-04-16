@@ -115,15 +115,5 @@ void loop(void)
 }
 <<<<<<< HEAD:Arduino_Code.ino
 
-
-  myservo.write(val);
-
-  /* now the z-component */
-  val1 = - (quat.z()) * 85;
-  val1 = map(val1, -70, 70, 0, 180);
-  myservo1.write(val1);
-
-  delay(10);
-}
 =======
 >>>>>>> origin/cont.-servo:Arduino_Code
