@@ -29,4 +29,24 @@ test 6
 
 test 7
   4/16/17, 1:54 AM: testing values at 10 and 250, mod servo
-    
+    consistent with observations from previous tests
+
+From this point on, the next tests will be conducted by connecting two of the pins on the modded servo together
+I chose to do this because it gives me full speed at PWM value of 253 (~255)
+
+test 8
+  4/16/17, 2:03 AM: testing values at 10 and 250, mod servo
+    we get full speed at values near 0 and values near 255, this is good
+
+test 9
+  4/16/17, 2:07 AM: testing values at 10 and 250, mod servo
+    expected: the servo will start fast, slow down near 100 and speed up
+    to max opposite speed at near 255
+    result: the motor went at constant speed at all PWM values,
+    and only switched directions at ~40
+
+The next tests will be conducted with the other modded servo
+
+test 10
+  4/16/17, 2:17 AM: testing values at 10 and 250, mod servo
+  the motor just went at constant speed
