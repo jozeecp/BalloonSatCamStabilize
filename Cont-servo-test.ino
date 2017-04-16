@@ -6,7 +6,7 @@ int joyPin = 0; //connect joystick to pin A0
 
 void setup(void) {
   pinMode(servoPin, OUTPUT); //set up the servoPin as an output pin
-  //pinMode(joyPin, INPUT);
+  pinMode(joyPin, INPUT);
   Serial.begin(9600); // begin serial monitor
 }
 
@@ -28,7 +28,7 @@ void loop(void) {
   pwmVal = 0;
   analogWrite(servoPin, pwmVal); */
 
-  //pwmVal = analogRead(joyPin);
-  //pwmVal = map(pwmVal, )
+  pwmVal = analogRead(joyPin);
+  pwmVal = map(pwmVal, 0, 100, 5, 253);
   Serial.println(joyPin);
 }
