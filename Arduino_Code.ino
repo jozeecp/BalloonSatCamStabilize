@@ -1,4 +1,4 @@
-/* 
+/*
 Wiring:
 
 From  sensor, yellow goes to SCL and orange goes to SDA
@@ -21,7 +21,7 @@ void setup(void)
 {
   myservo.attach(9); // servo pin
   myservo1.attach(10); // servo1 pin
-  
+
   Serial.begin(9600);
 
   /* Initialise the sensor */
@@ -31,13 +31,13 @@ void setup(void)
     Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
     while(1);
   }
-  
+
   delay(1000);
 }
 
 
 void loop(void)
-{ 
+{
   // Quaternion data
   imu::Quaternion quat = bno.getQuat();
 
@@ -45,7 +45,7 @@ void loop(void)
   float y = quat.y();
   float z = quat.z();
 
-  
+
   Serial.print("qW: ");
   Serial.print(quat.w());
   Serial.print(" qX: ");
@@ -60,7 +60,7 @@ void loop(void)
   x = x - .1;
 
   /* Now we take the x compnent of the rotational motion and mep it to control the servo */
-  if (z < .45 && z > -.14) 
+  if (z < .45 && z > -.14)
   {
     val = x * 90;
     val = map(val, -70, 70, 0, 180);
@@ -79,10 +79,10 @@ void loop(void)
   }
 
 
-  
-  
+
+
   myservo.write(val);
-  
+
   /* now the z-component */
   val1 = - (quat.z()) * 85;
   val1 = map(val1, -70, 70, 0, 180);
