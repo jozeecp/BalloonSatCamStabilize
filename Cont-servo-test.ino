@@ -24,17 +24,18 @@ void loop(void) {
     delay(100);
   } */
 
-  //read from serial monitor
+  /*//read from serial monitor
   if (Serial.available() > 0) {
                 // read the incoming byte:
                 pwmVal = Serial.read();
                 pwmVal = pwmVal, DEC;
                 analogWrite(servoPin, pwmVal);
-  }
+  } */
 
-  /* //assign a static pwm value
+  //assign a static pwm value
+  setPwmFrequency(9, 8);
   pwmVal = 0;
-  analogWrite(servoPin, pwmVal); */
+  analogWrite(servoPin, pwmVal);
 
   /* //use a joystick to control servo speed
   pwmVal = analogRead(joyPin);
