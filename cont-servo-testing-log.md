@@ -46,13 +46,11 @@ test 9
     and only switched directions at ~40
 
 Using the voltage divider modded servo
-
 test 10
   4/16/17, 2:17 AM: sweep from 0 to 255
   the motor just went at constant speed
 
 Using the unconnected modded servo again
-
 test 11
   4/16/17, 2:20 AM: sweep from 0 to 255, all leads touching
     constant speed and short circuit errors like with the unmodded servo
@@ -60,7 +58,6 @@ test 11
     potentiometer is "closed"
 
 Using the unmodded servo
-
 test 12
   4/16/17, 2:24 AM: sweep from 0 to 253 to avoid the short circuit error
     avoided short circuit error!
@@ -73,3 +70,26 @@ test 13
     at 10: almost constant motion at high speed, but there is a "dip" in the motion every revolution
     at 90: no motion, just vibration
     at 250: switches from high speed to low speed at constant intervals, opposite direction to 10
+
+Using the no-potentiometer modded servo
+test 14
+  4/17/17, 6:54 PM: test various values:
+    0 (0% duty cycle): no motion, slight vibration
+    64 (25% duty cycle): no motion, slight vibration
+    127 (50% duty cycle): no motion, slight vibration
+    191 (75% duty cycle): no motion, fainter vibration
+    255 (100% duty cycle): no motion, no vibration
+
+Using the voltage-divider modded servo
+test 14
+  4/17/17, 7:02 PM: test various values:
+    0 (0% duty cycle): no motion, vibration
+    64 (25% duty cycle): full motion, clockwise
+    127 (50% duty cycle): full motion, clockwise
+    191 (75% duty cycle): no motion, slight vibration
+    255 (100% duty cycle): no motion, no vibration
+    253 (99% duty cycle): full motion, counterclockwise
+    5 (2% duty cycle): full motion, clockwise
+    170 (66% duty cycle):
+
+    From this I can tell that if I map the motion from
