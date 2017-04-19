@@ -26,12 +26,6 @@ int speedC = 10; //constant of proportionality for angular velocity
 int rotDist = 0; //degrees turned by sensor
 int distC = 100;//constant of proportionality for degrees turned
 
-int g1 = 0;
-int g2 = 0;
-int g3 = 0;
-int g4 = 0;
-
-
 Stepper motor(512, in1Pin, in2Pin, in3Pin, in4Pin);
 
 void setup()
@@ -58,19 +52,10 @@ void setup()
 
 void loop()
 {
-//set up for get vector values
-  //set up the get quat function
-  imu::Quaternion quat = bno.getQuat();
-
   //set up the get gyroscope function
   imu::Vector<3> gyro = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
 
-
   rotSpeed = abs(gyro.z() * speedC); // andgular velocity from sensor, gyroscope
-  g1 = quat.z() * distC;
-  g2 = g1;
-  g3 = g2;
-  g4 = g3;
 
   if ((gyro.z() * speedC) > 5) {
     rotDist = 500;
@@ -82,8 +67,8 @@ void loop()
     rotDist = 0;
   }
 
-  //motor.setSpeed(38);
-  //motor.step(500);
+  motor.setSpeed(rotSpeed);
+  motor.step(rotDist);
 
   Serial.print(rotSpeed);
   Serial.print("   ");
