@@ -3,11 +3,12 @@ Adapted by Jose Catarino from:
 Adafruit Arduino - Lesson 16. Stepper
 
 Previous versions:
-  v0                     // unedited code from Adafruit
-  v0.1                   // moved step and speed to loop
+  v0                     // unedited code from Adafruit, 4/18/17
+  v0.1                   // moved step and speed to loop, 4/18/17
+  v1.0                   // added BNO055 sensor input, 4/18/17
 
 Current Version:
-  v1                     // added BNO055 sensor input
+  v2.0                   // replaced the Stepper.h library with Accelstepper.h, 4/19/17
 */
 
 //set up for the BNO055 sensor
@@ -18,29 +19,24 @@ Current Version:
 #include <Servo.h>
 Adafruit_BNO055 bno = Adafruit_BNO055();
 
-//set up for the Stepper
-#include <Stepper.h>
+//set up the stepper motor library
+#include <AccelStepper.h>
 
 //set up pins for the L293D
-int in1Pin = 12;
-int in2Pin = 11;
-int in3Pin = 10;
-int in4Pin = 9;
+#define motorPin1  2
+#define motorPin2  4
+#define motorPin3  6
+#define motorPin4  7
 
 //set up constants for sensor input
 int rotSpeed = 0; //angular velocity value from BNO055 sensor
-int speedC = 10; //constant of proportionality for angular velocity
+int speedC = 10; //a scaling factor
 int rotDist = 0; //"steps" always either 500, -500, or 0
 
-Stepper motor(512, in1Pin, in2Pin, in3Pin, in4Pin);
+AccelStepper stepper1 (HALF4WIRE, motorPin1, motorPin2, motorPin3, motorPin4, true);
 
 void setup()
 {
-  // set up the pins to L293D
-  pinMode(in1Pin, OUTPUT);
-  pinMode(in2Pin, OUTPUT);
-  pinMode(in3Pin, OUTPUT);
-  pinMode(in4Pin, OUTPUT);
 
   //Initialise the serial monitor
   Serial.begin(9600);
@@ -58,30 +54,15 @@ void setup()
 
 void loop()
 {
-  //set up the get gyroscope function
+  // set up the get gyroscope function, angular velocity rads/sec
   imu::Vector<3> gyro = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
 
-  rotSpeed = abs(gyro.z() * speedC); // absolute value of the angular velocity x a sclaing factor
+  // angular velocity * a scaling factor
+  rotSpeed = gyro.z() * speedC;
 
-  //if sensor is spinning cw, turn stepper in cw direction
-  if ((gyro.z() * speedC) > 5) {
-    rotDist = 500;
-  }
-  //if sensor is spinning ccw, turn stepper in ccw direction
-  else if ((gyro.z() * speedC) < -5) {
-    rotDist = -500;
-  }
-  //is sensor is relatively still, don't turn
-  else {
-    rotDist = 0;
-  }
+  // write speed value
+  stepper1.setSpeed(rotSpeed);
 
-  motor.setSpeed(rotSpeed); //set speed proportional to angular velocity of sensor
-  motor.step(rotDist); //control cw vs ccw direction
-
-  Serial.print(rotSpeed);
-  Serial.print("   ");
-  Serial.println(rotDist);
-
-  delay(10);
+  //run stepper motor
+  stepper1.run();
 }
