@@ -14,7 +14,8 @@ connections
         Pin 4            7|      |15    Pin 6
         +5V              8|      |16    +5V
 
-  servo to pin 9
+  SDA is orange
+  SCL is yellow
 
 Previous versions:
   v0                     // unedited code from Adafruit, 4/18/17
@@ -23,9 +24,11 @@ Previous versions:
   v2.0                   // replaced the Stepper.h library with Accelstepper.h, 4/19/17
   v2.1                   // added setup function components, 4/19/17
   v3.0                   // included pitch control, 4/19/17
+  v3.1                   // scaling factor adjustments, 4/19/17
+
 
 Current Version:
-  v3.1                   // scaling factor adjustments, 4/19/17
+  v3.1.1                  // no pitch correction, 4/19/17
 */
 
 //set up for the BNO055 sensor
@@ -40,9 +43,6 @@ Adafruit_BNO055 bno = Adafruit_BNO055();
 #include <AccelStepper.h>
 #define HALF4WIRE 8
 
-//set up servo library
-#include <Servo.h>
-
 //set up pins for the L293D for stepper motor
 #define motorPin1  2
 #define motorPin2  4
@@ -50,20 +50,13 @@ Adafruit_BNO055 bno = Adafruit_BNO055();
 #define motorPin4  7
 AccelStepper stepper1 (HALF4WIRE, motorPin1, motorPin2, motorPin3, motorPin4, true);
 
-//set up servo
-Servo myservo;
-float pitRate;
 
 //set up constants for sensor input
 int rotSpeed = 0; // angular velocity value from BNO055 sensor
-int speedC = 500; // a scaling factor for speed
-int pitC = 100; // a scaling factor for pitch
+int speedC = 200; // a scaling factor for speed
 
 void setup()
 {
-  //servo pins
-  myservo.attach(9);
-
   //Initialise the serial monitor
   Serial.begin(9600);
 
@@ -86,12 +79,6 @@ void setup()
 
 void loop()
 {
-  stepperLoop();
-  pitchLoop();
-}
-
-// stepper motor control module
-void stepperLoop () {
   // set up the get gyroscope function, angular velocity rads/sec
   imu::Vector<3> gyro = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
 
@@ -103,30 +90,4 @@ void stepperLoop () {
 
   // start the motor
   stepper1.run();
-}
-
-// pitch control module
-void pitchLoop() {
-  // get absolute angle position
-  imu::Quaternion quat = bno.getQuat();
-
-  // define pitRate in terms of quat data
-  if ((abs(quat.x())) > (abs(quat.y())) && quat.x() > 0) {
-    pitRate = quat.x() * -pitC;
-  }
-  else if ((abs(quat.x())) > (abs(quat.y())) && quat.x() < 0) {
-    pitRate = quat.x() * pitC;
-  }
-  else if ((abs(quat.x())) < (abs(quat.y())) && quat.y() > 0) {
-    pitRate = quat.y() * -pitC;
-  }
-  else if ((abs(quat.x())) < (abs(quat.y())) && quat.y() < 0) {
-    pitRate = quat.y() * pitC;
-  }
-
-  // adjust pitRate to servo values
-  pitRate = map(pitRate, -70, 70, 0, 180);
-
-  // write pitRate to servo
-  myservo.write(pitRate);
 }
