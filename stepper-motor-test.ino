@@ -22,9 +22,10 @@ Previous versions:
   v1.0                   // added BNO055 sensor input, 4/18/17
   v2.0                   // replaced the Stepper.h library with Accelstepper.h, 4/19/17
   v2.1                   // added setup function components, 4/19/17
+  v3.0                   // included pitch control, 4/19/17
 
 Current Version:
-  v3.0                   // included pitch control, 4/19/17
+  v3.1                   // scaling factor adjustments, 4/19/17
 */
 
 //set up for the BNO055 sensor
@@ -79,7 +80,7 @@ void setup()
   stepper1.setMaxSpeed(12000.0);
   stepper1.setAcceleration(1000.0);
   stepper1.setSpeed(500);
-  stepper1.moveTo(1200000);
+  stepper1.moveTo(120000);
 
 }
 
@@ -95,7 +96,7 @@ void stepperLoop () {
   imu::Vector<3> gyro = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
 
   // angular velocity * a scaling factor
-  rotSpeed = gyro.z() * speedC;
+  rotSpeed = gyro.z() * -speedC;
 
   // set the speed for the motor
   stepper1.setSpeed(rotSpeed);
@@ -124,9 +125,8 @@ void pitchLoop() {
   }
 
   // adjust pitRate to servo values
-  pitRate = map(pitRate, -10, 10, 0, 30);
+  pitRate = map(pitRate, -70, 70, 0, 180);
 
   // write pitRate to servo
   myservo.write(pitRate);
-
 }
