@@ -23,6 +23,9 @@ Connections:
   Connect SDA with orange wire
           SCL with yellow wire
 
+Note: if the pitch or the rotation move too fast/slow/wrong direction, adjust the
+speedC and pitC variables
+
 Previous versions:
   v0                     // unedited code from Adafruit and AccelStepper.h library, 4/18/17
   v0.1                   // moved step and speed to loop, 4/18/17
@@ -32,11 +35,10 @@ Previous versions:
   v3.0                   // included pitch control, 4/19/17
   v3.1                   // scaling factor adjustments, 4/19/17
   v3.2                   // removed pitch correction, 4/19/17
-
-
+  v3.2.1                 // full rotation bug fix, 4/20/17
 
 Current Version:
-  v3.2.1                 // full rotation bug fix, 4/20/17
+  v4.0                   // included pitch and rotation control, 4/20/17
 */
 
 // libraries needed for BNO055 position sensor
@@ -51,6 +53,9 @@ Adafruit_BNO055 bno = Adafruit_BNO055();
 #include <AccelStepper.h>    // http://www.airspayce.com/mikem/arduino/AccelStepper/index.html
 #define HALF4WIRE 8
 
+// servo library
+#include <Servo.h>
+
 // pins for the L293D for stepper motor
 #define motorPin1  2
 #define motorPin2  4
@@ -58,10 +63,13 @@ Adafruit_BNO055 bno = Adafruit_BNO055();
 #define motorPin4  7
 AccelStepper stepper1 (HALF4WIRE, motorPin1, motorPin2, motorPin3, motorPin4, true);
 
-
 // variables for sensor-controlled motor motion
 int rotSpeed = 0;            // angular velocity value from BNO055 sensor
-int speedC = 200;            // a scaling factor for speed
+int speedC = -200;            // a scaling factor for speed
+Servo myservo;
+int pitC = 100;              // a scaling factor for pitch
+
+
 
 void setup()
 {
@@ -81,19 +89,60 @@ void setup()
   // Initialise stepper motor values
   stepper1.setMaxSpeed(1000);
   stepper1.setSpeed(500);
+
+  // servo setup
+  myservo.attach(9);         // attach servo to pin 9
 }
+
+
 
 void loop()
 {
+  stepperControl();
+  pitchControl();
+}
+
+
+
+// stepper control function
+void stepperControl() {
   // gyroscope function, angular velocity rads/sec
   imu::Vector<3> gyro = bno.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
 
   // angular velocity * a scaling factor
-  rotSpeed = gyro.z() * -speedC;
+  rotSpeed = gyro.z() * speedC;
 
   // set the speed for the motor
   stepper1.setSpeed(rotSpeed);
 
   // start the motor
   stepper1.runSpeed();
+}
+
+
+
+// pitch control function
+void pitchLoop() {
+  // get absolute angle position
+  imu::Quaternion quat = bno.getQuat();
+
+  // define pitRate in terms of quat data
+  if ((abs(quat.x())) > (abs(quat.y())) && quat.x() > 0) {
+    pitRate = quat.x() * -pitC;
+  }
+  else if ((abs(quat.x())) > (abs(quat.y())) && quat.x() < 0) {
+    pitRate = quat.x() * pitC;
+  }
+  else if ((abs(quat.x())) < (abs(quat.y())) && quat.y() > 0) {
+    pitRate = quat.y() * -pitC;
+  }
+  else if ((abs(quat.x())) < (abs(quat.y())) && quat.y() < 0) {
+    pitRate = quat.y() * pitC;
+  }
+
+  // adjust pitRate to servo values
+  pitRate = map(pitRate, -70, 70, 0, 180);
+
+  // write pitRate to servo
+  myservo.write(pitRate);
 }
