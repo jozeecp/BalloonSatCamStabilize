@@ -79,7 +79,7 @@ void setup()
   delay(1000);
 
   // Initialise stepper motor values
-  stepper1.setMaxSpeed(12000.0);
+  stepper1.setMaxSpeed(1000);
   stepper1.setSpeed(500);
 }
 
